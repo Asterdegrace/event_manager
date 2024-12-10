@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events List</title>
+    <style>
+        .selected {
+            background-color: red;
+            color: white;
+        }
+        .deleteBtn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Events</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notification in notifications %}
+                <tr>
+                    <td onclick="window.location.href='/my_events/{{ notification.event_id }}'">{{ notification.name }}</td>
+                    <td onclick="window.location.href='/events/{{ notification.event_id }}'">{{ notification.date }}</td>
+                    <td>
+                        <button class="deleteBtn" data-id="{{ notification._id }}">Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button id="submitDelete">Submit Deletions</button>
+
+    <script>
+        const notificationsToDelete = []; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+        
+            const deleteButtons = document.querySelectorAll('.deleteBtn');
+            
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const notificationId = button.getAttribute('data-id');  
+                
+                    if (notificationsToDelete.includes(notificationId)) {
+                        notificationsToDelete.splice(notificationsToDelete.indexOf(notificationId), 1);  // Убираем ID из массива
+                    } else {
+                        notificationsToDelete.push(notificationId);  
+                    }
+                    
+                    button.classList.toggle('selected');
+                });
+            });
+
+            document.getElementById('submitDelete').addEventListener('click', () => {
+                if (notificationsToDelete.length === 0) {
+                    alert('No notifications selected for deletion.');
+                    return;
+                }
+
+                fetch('/my_notifications_post', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        notifications: notificationsToDelete, 
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('Selected notifications deleted successfully!');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Failed to delete notifications:', error);
+                    alert('Failed to delete notifications!');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
