@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to {{ current_user }}'s Menu</h1>
+
+    <div>
+        <a href="/create_event"><button>Create Event</button></a>
+        <a href="/my_events"><button>My Events List</button></a>
+        <a href="/find_public_event"><button>Find Public Event(ToDo)</button></a>
+        <a href="/my_notifications"><button>My Notifications</button></a>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+        
+    </div>
+</body>
+</html>
