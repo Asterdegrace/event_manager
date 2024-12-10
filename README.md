@@ -98,4 +98,5 @@ The application uses JWT for authenticating users. When a user logs in, a JWT to
 
 - **Token Expiration**: If your token expires, you will need to log in again.
 - **Missing Dependencies**: Make sure all required packages are installed using `pip install -r requirements.txt`.
-
+p.s. not all the notification fitures are added and project needs implementation of apscheduler, smtplib and email.mime. for sending notifications via email
+Additional: cors
